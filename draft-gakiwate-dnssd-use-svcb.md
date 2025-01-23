@@ -108,7 +108,7 @@ For example, if the SRV record for `service1._foo._tcp.example.com` returns a
 hostname `host1.example.com` and port number 8080.
 
 ```
-   service1._foo._tcp.example.com   SRV   0  0  8080  host1.example.com
+   service1._foo._tcp.example.com  3600  IN  SRV   0  0  8080  host1.example.com
 ```
 
 In this case, the client SHOULD issue a SVCB query for `_8080._foo.host1.example.com`.
