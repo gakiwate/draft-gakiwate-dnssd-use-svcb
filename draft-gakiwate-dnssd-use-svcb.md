@@ -60,12 +60,12 @@ step to allow clients to connect to this service instance optimally.
 
 # Motivation
 
-Typically, the DNS-SD process begins with a client enumerating service instance
-names using a PTR record query. The result of this PTR query is a list of zero
-or more PTR records each pointing to a unique service instance. For example, a
-query for `_foo._tcp.example.com` might return multiple PTR records, each
-corresponding to a specific service instances, such as
-`service1._foo._tcp.example.com` and `service2._foo._tcp.example.com`.
+Typically, the DNS-SD {{!DNSSD=RFC6763}} process begins with a client
+enumerating service instance names using a PTR record query. The result of this
+PTR query is a list of zero or more PTR records each pointing to a unique
+service instance. For example, a query for `_foo._tcp.example.com` might return
+multiple PTR records, each corresponding to a specific service instances, such
+as `service1._foo._tcp.example.com` and `service2._foo._tcp.example.com`.
 
 Once the client identifies the exact service instance it wants to connect to,
 the client issues an SRV query for the service instance. The SRV record for the
@@ -90,8 +90,8 @@ how it is to be used, is service-dependent. However, additional properties which
 are not service-specific, like supported protocols, or privacy requirements
 which speed up connection establishment and improve user privacy do not fit
 naturally in this scheme. This documents describes how this limitation can be
-overcome by integrating the use of SVCB / HTTPS resource records in the DNS
-service discovery process.
+overcome by integrating the use of SVCB / HTTPS resource records {{!SVCB=RFC9460}}
+in the DNS service discovery process.
 
 # Use of SVCB with Service Instance Resolution
 
@@ -100,15 +100,17 @@ of the service instance, but before the A and AAAA queries are issued the client
 SHOULD issue an SVCB query. The service is translated into a QNAME by prepending
 the hostname with a label indicating the scheme prefixed with an underscore.
 Since there could be more than one service instance on the same host, "Port
-Prefix Naming" {{!SVCB=RFC9460}} should be used.
+Prefix Naming" {{SVCB}} should be used.
+
+## Example Use
 
 For example, when the SRV record for `service1._foo._tcp.example.com` returns a
-hostname `host1.example.com` and port number 8080 the client should issue a SVCB
+hostname `host1.example.com` and port number 8080 the client SHOULD issue a SVCB
 query for `_8080._foo.host1.example.com`. The service instance operator could
 publish this record:
 
 ```
-_8080._foo.host1.example.com 7200 IN SVCB 1 . ( alpn=h2,h3)
+   _8080._foo.host1.example.com 7200 IN SVCB 1 . ( alpn=h2,h3)
 ```
 
 Put together, the client in this case learns that the service instance also
@@ -121,7 +123,6 @@ the service instance based on the information obtained from the SVCB RRs.
 
 # Security Considerations
 
-TODO Security
 
 # IANA Considerations
 
