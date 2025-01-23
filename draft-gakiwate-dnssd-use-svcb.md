@@ -104,18 +104,25 @@ Prefix Naming" {{SVCB}} should be used.
 
 ## Example Use
 
-For example, when the SRV record for `service1._foo._tcp.example.com` returns a
-hostname `host1.example.com` and port number 8080 the client SHOULD issue a SVCB
-query for `_8080._foo.host1.example.com`. The service instance operator could
-publish this record:
+For example, if the SRV record for `service1._foo._tcp.example.com` returns a
+hostname `host1.example.com` and port number 8080.
 
 ```
-   _8080._foo.host1.example.com 7200 IN SVCB 1 . ( alpn=h2,h3)
+   service1._foo._tcp.example.com   SRV   0  0  8080  host1.example.com
 ```
 
-Put together, the client in this case learns that the service instance also
-supports h3 (which it may prefer over h2) speeding up connection establishment.
-Other SvcParamKeys such as ipv4hint, ipv6hint may also be used in conjuction.
+In this case, the client SHOULD issue a SVCB query for `_8080._foo.host1.example.com`.
+
+The service instance operator can publish this SVCB record:
+
+```
+   _8080._foo.host1.example.com  7200  IN SVCB  1  .  ( alpn=h2,h3 )
+```
+
+All put together, the client in this case learns that the service instance also
+supports h3 (which the client may prefer over h2) speeding up connection
+establishment with the service with its preferred protocol. Other SvcParamKeys
+such as ipv4hint, ipv6hint may also be used in conjuction.
 
 As before, the client should then issue A and AAAA queries. However, now the
 client can make an informed decisions on how best to initiate the connection to
