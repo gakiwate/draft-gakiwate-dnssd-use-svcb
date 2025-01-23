@@ -11,9 +11,6 @@ v: 3
 area: ""
 workgroup: "Extensions for Scalable DNS Service Discovery"
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
 venue:
   group: "Extensions for Scalable DNS Service Discovery"
   type: ""
@@ -38,10 +35,10 @@ informative:
 
 --- abstract
 
-This document proposes an extension to the DNS Service Discovery process(?) by
-integrating Service Binding (SVCB) resource records. The inclusion of SVCB
-records alongside SRV records enables richer metadata exchange, enhancing the
-ability to identify and select optimal connection parameters. Specifically, SVCB
+This document describes the use of Service Binding (SVCB) resource records in
+the DNS Service Discovery process. The use of SVCB records alongside SRV records
+during service discovery enables richer metadata exchange, enhancing the ability
+to identify and select optimal connection parameters.  Specifically, SVCB
 records allow service instances to advertise properties such as
 Application-Layer Protocol Negotiation (ALPN) identifiers and other endpoint
 configuration options which streamlines client connections by providing
@@ -53,16 +50,16 @@ discovery phase.
 # Introduction
 
 DNS Service Discovery (DNS-SD) relies on a sequence of steps to enable the
-discovery and connection to local network services.  This document proposes an
-enhancement to the DNS Service Discovery process by integrating SVCB / HTTPS
-resource records as an additional step at the end of this existing sequence to
-allow clients to connect to this service instance optimally.
+discovery and connection to local network services.  This document describes the
+use of SVCB / HTTPS RRs in the DNS Service Discovery process as an additional
+step to allow clients to connect to this service instance optimally.
 
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
 
 # Motivation
+
 Typically, the DNS-SD process begins with a client enumerating service instance
 names using a PTR record query. The result of this PTR query is a list of zero
 or more PTR records each pointing to a unique service instance. For example, a
@@ -92,65 +89,35 @@ service itself. The specific nature of the additional data in TXT records, and
 how it is to be used, is service-dependent. However, additional properties which
 are not service-specific, like supported protocols, or privacy requirements
 which speed up connection establishment and improve user privacy do not fit
-naturally in this scheme. This limitation is what the document proposes to fix
-by integrating the use of SVCB / HTTPS resource records.
+naturally in this scheme. This documents describes how this limitation can be
+overcome by integrating the use of SVCB / HTTPS resource records in the DNS
+service discovery process.
 
-# Extension to Service Instance Resolution
+# Use of SVCB with Service Instance Resolution
 
 Once the client has resolved the SRV record to identify the hostname and the port
 of the service instance, but before the A and AAAA queries are issued the client
-SHOULD(?) issue an SVCB query.
-
-When querying the SVCB RR, the service is translated into a QNAME by prepending
+SHOULD issue an SVCB query. The service is translated into a QNAME by prepending
 the hostname with a label indicating the scheme prefixed with an underscore.
 Since there could be more than one service instance on the same host, "Port
-Prefix Naming" [RFC9460] should be used.
-
-TODO: Why not use the service instance instead of the hostname.
+Prefix Naming" {{!SVCB=RFC9460}} should be used.
 
 For example, when the SRV record for `service1._foo._tcp.example.com` returns a
 hostname `host1.example.com` and port number 8080 the client should issue a SVCB
-query for `_8080._foo.host1.example.com`. The owner of the service instance could
-publish this record `_8080._foo.host1.example.com 7200 IN SVCB 1 . ( alpn=h2,h3
-)`. Put together, the client learns that the service instance also supports h3
-(which it may prefer over h2) speeding up connection establishment. Other
-SvcParamKeys such as ipv4hint, ipv6hint may also be used in conjuction.
+query for `_8080._foo.host1.example.com`. The service instance operator could
+publish this record:
 
-TODO: Should any restrictions be placed on SVCB RRs? Like no alias mode?
+```
+_8080._foo.host1.example.com 7200 IN SVCB 1 . ( alpn=h2,h3)
+```
+
+Put together, the client in this case learns that the service instance also
+supports h3 (which it may prefer over h2) speeding up connection establishment.
+Other SvcParamKeys such as ipv4hint, ipv6hint may also be used in conjuction.
 
 As before, the client should then issue A and AAAA queries. However, now the
 client can make an informed decisions on how best to initiate the connection to
 the service instance based on the information obtained from the SVCB RRs.
-
-TODO: How long should we wait for the SVCB answer? Resolution delay timer for 50
-milliseconds?  Should we draw any parallels to happy eyeballs? The SVCB,
-followed by A / AAAA?
-
-TODO: What is the minimum set of SvcParams that we expect to see
-and what do we not expect to see? ipv4hint / ipv6hint should be ok.
-port is not ok.
-
-# Alternatives to SVCB Records
-
-We present the potential alternatives to the proposed SVCB extension, and the
-limitations which make the SVCB records desriable over these alternatives.
-
-## Use of TXT records
-
-In the context of service discovery, while TXT records can carry arbitrary
-key-value pairs, including the SvcParamKeys as defined for SVCB RRs, they lack a
-standardized schema which can lead to inconsistencies and challenges in parsing
-or interpreting their content. While SvcParamKeys use an IANA registry, no such
-constraints exist for the keys in the TXT records which make key collision
-likely.  Moreover, the TXT records are a way to provide additional information
-to the service and not to advertize endpoint configuration options. SVCB records
-are designed to advertise endpoint configuration options in a well-defined
-format. This structured approach reduces ambiguity and also enables clients to
-make informed decisions, at a host level, on selecting the most efficient
-protocols without needing to parse ad hoc key values in the TXT records.
-
-TODO: Is enumerating possible ALPNs an option?
-- Why not browse _h3._foo._tcp /_h2._foo_._tcp
 
 # Security Considerations
 
