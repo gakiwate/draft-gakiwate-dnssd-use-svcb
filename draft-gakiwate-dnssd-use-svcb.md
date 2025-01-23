@@ -8,19 +8,19 @@ number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: ""
+workgroup: "Extensions for Scalable DNS Service Discovery"
 keyword:
  - next generation
  - unicorn
  - sparkling distributed ledger
 venue:
-  group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  group: "Extensions for Scalable DNS Service Discovery"
+  type: ""
+  mail: "dnssd@ietf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/dnssd/"
+  github: "gakiwate/draft-gakiwate-dnssd-use-svcb"
+  latest: "https://gakiwate.github.io/draft-gakiwate-dnssd-use-svcb/draft-gakiwate-dnssd-use-svcb.html"
 
 author:
  -
