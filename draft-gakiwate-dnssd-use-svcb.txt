@@ -2,34 +2,45 @@
 
 
 
-WG Working Group                                              Y. N. Here
-Internet-Draft                                    Your Organization Here
-Intended status: Informational                           23 January 2025
-Expires: 27 July 2025
+Extensions for Scalable DNS Service Discovery                 G. Akiwate
+Internet-Draft                                                  T. Pauly
+Intended status: Informational                                 Apple Inc
+Expires: 28 July 2025                                    24 January 2025
 
 
                   Use SVCB with DNS Service Discovery
-                     draft-gakiwate-dnssd-use-svcb
+                  draft-gakiwate-dnssd-use-svcb-latest
 
 Abstract
 
-   TODO Abstract
+   This document describes the use of Service Binding (SVCB) resource
+   records in the DNS Service Discovery process.  The use of SVCB
+   records alongside SRV records during service discovery enables richer
+   metadata exchange, enhancing the ability to identify and select
+   optimal connection parameters.  Specifically, SVCB records allow
+   service instances to advertise properties such as Application-Layer
+   Protocol Negotiation (ALPN) identifiers and other endpoint
+   configuration options which streamlines client connections by
+   providing essential information for protocol negotiation and
+   connection setup during the discovery phase.
 
 About This Document
 
    This note is to be removed before publishing as an RFC.
 
    The latest revision of this draft can be found at
-   https://example.com/LATEST.  Status information for this document may
-   be found at https://datatracker.ietf.org/doc/draft-gakiwate-dnssd-
-   use/.
+   https://gakiwate.github.io/draft-gakiwate-dnssd-use-svcb/draft-
+   gakiwate-dnssd-use-svcb.html.  Status information for this document
+   may be found at https://datatracker.ietf.org/doc/draft-gakiwate-
+   dnssd-use-svcb/.
 
-   Discussion of this document takes place on the WG Working Group
-   mailing list (mailto:WG@example.com), which is archived at
-   https://example.com/WG.
+   Discussion of this document takes place on the Extensions for
+   Scalable DNS Service Discovery mailing list (mailto:dnssd@ietf.org),
+   which is archived at https://mailarchive.ietf.org/arch/browse/dnssd/.
+   Subscribe at https://www.ietf.org/mailman/listinfo/dnssd/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/USER/REPO.
+   https://github.com/gakiwate/draft-gakiwate-dnssd-use-svcb.
 
 Status of This Memo
 
@@ -46,7 +57,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 July 2025.
+   This Internet-Draft will expire on 28 July 2025.
 
 Copyright Notice
 
@@ -66,15 +77,22 @@ Table of Contents
 
    1.  Introduction
    2.  Conventions and Definitions
-   3.  Security Considerations
-   4.  IANA Considerations
-   5.  Normative References
-   Acknowledgments
-   Author's Address
+   3.  Motivation
+   4.  Use of SVCB with Service Instance Resolution
+     4.1.  Example Use
+   5.  Security Considerations
+   6.  IANA Considerations
+   7.  Normative References
+   Appendix A.  Acknowledgments
+   Authors' Addresses
 
 1.  Introduction
 
-   TODO Introduction
+   DNS Service Discovery (DNS-SD) relies on a sequence of steps to
+   enable the discovery and connection to local network services.  This
+   document describes the use of SVCB / HTTPS RRs in the DNS Service
+   Discovery process as an additional step to allow clients to connect
+   to this service instance optimally.
 
 2.  Conventions and Definitions
 
@@ -84,15 +102,92 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  Security Considerations
+3.  Motivation
 
-   TODO Security
+   Typically, the DNS-SD [DNSSD] process begins with a client
+   enumerating service instance names using a PTR record query.  The
+   result of this PTR query is a list of zero or more PTR records each
+   pointing to a unique service instance.  For example, a query for
+   _foo._tcp.example.com might return multiple PTR records, each
+   corresponding to a specific service instances, such as
+   service1._foo._tcp.example.com and service2._foo._tcp.example.com.
 
-4.  IANA Considerations
+   Once the client identifies the exact service instance it wants to
+   connect to, the client issues an SRV query for the service instance.
+   The SRV record for the service instance includes the hostname of the
+   service instance, the port number on which the service is listening,
+   and priority and weight fields for load balancing or failover.  For
+   example, querying the SRV record for service1._foo._tcp.example.com
+   might return a hostname like host1.example.com and a port number,
+   such as 8080.
+
+   After resolving the SRV record, the client issues A and AAAA queries
+   to map the hostname in the SRV record to an IP address.  For example,
+   querying for host1.example.com might return an A record with the IPv4
+   address 192.0.2.3 or an AAAA record with the IPv6 address
+   2001:db8::1.  Once the IP address is obtained, the client can
+   initiate a connection to the desired service instance using the port
+   number specified in the SRV record.
+
+   However, this sequence provides only minimal metadata about the
+   service itself which is why clients also query for TXT records
+   (alongside SRV records) for the service instance.  These TXT records
+   give additional information about the service itself.  The specific
+   nature of the additional data in TXT records, and how it is to be
+   used, is service-dependent.  However, additional properties which are
+   not service-specific, like supported protocols, or privacy
+   requirements which speed up connection establishment and improve user
+   privacy do not fit naturally in this scheme.  This documents
+   describes how this limitation can be overcome by integrating the use
+   of SVCB / HTTPS resource records [SVCB] in the DNS service discovery
+   process.
+
+4.  Use of SVCB with Service Instance Resolution
+
+   Once the client has resolved the SRV record to identify the hostname
+   and the port of the service instance, but before the A and AAAA
+   queries are issued the client SHOULD issue an SVCB query.  The
+   service is translated into a QNAME by prepending the hostname with a
+   label indicating the scheme prefixed with an underscore.  Since there
+   could be more than one service instance on the same host, "Port
+   Prefix Naming" [SVCB] should be used.
+
+4.1.  Example Use
+
+   For example, if the SRV record for service1._foo._tcp.example.com
+   returns a hostname host1.example.com and port number 8080.
+
+   service1._foo._tcp.example.com 3600 IN SRV 0 0 8080 host1.example.com
+
+   In this case, the client SHOULD issue a SVCB query for
+   _8080._foo.host1.example.com.
+
+   The service instance operator can publish this SVCB record:
+
+   _8080._foo.host1.example.com 7200 IN SVCB 1 .  ( alpn=h2,h3 )
+
+   All put together, the client in this case learns that the service
+   instance also supports h3 (which the client may prefer over h2)
+   speeding up connection establishment with the service with its
+   preferred protocol.  Other SvcParamKeys such as ipv4hint, ipv6hint
+   may also be used in conjuction.
+
+   As before, the client should then issue A and AAAA queries.  However,
+   now the client can make an informed decisions on how best to initiate
+   the connection to the service instance based on the information
+   obtained from the SVCB RRs.
+
+5.  Security Considerations
+
+6.  IANA Considerations
 
    This document has no IANA actions.
 
-5.  Normative References
+7.  Normative References
+
+   [DNSSD]    Cheshire, S. and M. Krochmal, "DNS-Based Service
+              Discovery", RFC 6763, DOI 10.17487/RFC6763, February 2013,
+              <https://www.rfc-editor.org/rfc/rfc6763>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -103,12 +198,20 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-Acknowledgments
+   [SVCB]     Schwartz, B., Bishop, M., and E. Nygren, "Service Binding
+              and Parameter Specification via the DNS (SVCB and HTTPS
+              Resource Records)", RFC 9460, DOI 10.17487/RFC9460,
+              November 2023, <https://www.rfc-editor.org/rfc/rfc9460>.
 
-   TODO acknowledge.
+Appendix A.  Acknowledgments
 
-Author's Address
+Authors' Addresses
 
-   Your Name Here
-   Your Organization Here
-   Email: your.email@example.com
+   Gautam Akiwate
+   Apple Inc
+   Email: gakiwate@apple.com
+
+
+   Tommy Pauly
+   Apple Inc
+   Email: tpauly@apple.com
