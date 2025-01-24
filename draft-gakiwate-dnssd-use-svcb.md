@@ -110,7 +110,8 @@ Naming" {{SVCB}} to encode the port learned from the SRV response, and the schem
 from the URI being accessed by the application. If there is no notion of a URI
 scheme for the application, then SVCB or HTTPS queries SHOULD NOT be made. If the
 URI scheme is "http" or "https", the client will issue a query for an HTTPS record;
-and if the port learned from the SRV response, it will leave off the port prefix.
+and if the port learned from the SRV response is the same as the default port
+(443), it will leave off the port prefix.
 
 ## Example Use of SVCB RRs
 
