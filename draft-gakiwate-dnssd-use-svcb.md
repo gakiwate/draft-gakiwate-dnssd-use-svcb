@@ -19,7 +19,7 @@ venue:
   github: "gakiwate/draft-gakiwate-dnssd-use-svcb"
   latest: "https://gakiwate.github.io/draft-gakiwate-dnssd-use-svcb/draft-gakiwate-dnssd-use-svcb.html"
 
-author
+author:
  -
     fullname: Gautam Akiwate
     organization: Apple Inc
