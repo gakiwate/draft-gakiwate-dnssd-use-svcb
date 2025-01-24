@@ -8,15 +8,13 @@
 <meta content="Gautam Akiwate" name="author">
 <meta content="Tommy Pauly" name="author">
 <meta content="
-       This document describes the use of Service Binding (SVCB) resource records in
-the DNS Service Discovery process. The use of SVCB records alongside SRV records
-during service discovery enables richer metadata exchange, enhancing the ability
-to identify and select optimal connection parameters.  Specifically, SVCB
-records allow service instances to advertise properties such as
-Application-Layer Protocol Negotiation (ALPN) identifiers and other endpoint
-configuration options which streamlines client connections by providing
-essential information for protocol negotiation and connection setup during the
-discovery phase. 
+       DNS Service Discovery (DNS-SD) relies on a sequence of steps to enable the
+discovery and connection to local network services. The use of Service Binding
+(SVCB) resource records during the service discovery process enables service
+instances to advertise properties such as Application-Layer Protocol Negotiation
+(ALPN) identifiers and other endpoint configuration options. This document
+describes the use of SVCB / HTTPS RRs in the DNS Service Discovery process as an
+additional step to allow clients to connect to this service instance optimally. 
     " name="description">
 <meta content="xml2rfc 3.25.0" name="generator">
 <meta content="draft-gakiwate-dnssd-use-svcb-latest" name="ietf.draft">
@@ -1091,15 +1089,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Use SVCB with DNS Service Discovery</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document describes the use of Service Binding (SVCB) resource records in
-the DNS Service Discovery process. The use of SVCB records alongside SRV records
-during service discovery enables richer metadata exchange, enhancing the ability
-to identify and select optimal connection parameters.  Specifically, SVCB
-records allow service instances to advertise properties such as
-Application-Layer Protocol Negotiation (ALPN) identifiers and other endpoint
-configuration options which streamlines client connections by providing
-essential information for protocol negotiation and connection setup during the
-discovery phase.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">DNS Service Discovery (DNS-SD) relies on a sequence of steps to enable the
+discovery and connection to local network services. The use of Service Binding
+(SVCB) resource records during the service discovery process enables service
+instances to advertise properties such as Application-Layer Protocol Negotiation
+(ALPN) identifiers and other endpoint configuration options. This document
+describes the use of SVCB / HTTPS RRs in the DNS Service Discovery process as an
+additional step to allow clients to connect to this service instance optimally.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1178,7 +1174,7 @@ discovery phase.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-use-of-svcb-with-service-in" class="internal xref">Use of SVCB with Service Instance Resolution</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-example-use" class="internal xref">Example Use</a></p>
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-example-use-of-svcb-rrs" class="internal xref">Example Use of SVCB RRs</a></p>
 </li>
             </ul>
 </li>
@@ -1206,10 +1202,15 @@ discovery phase.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">DNS Service Discovery (DNS-SD) relies on a sequence of steps to enable the
-discovery and connection to local network services.  This document describes the
-use of SVCB / HTTPS RRs in the DNS Service Discovery process as an additional
-step to allow clients to connect to this service instance optimally.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">This document describes the use of Service Binding (SVCB) resource records in
+the DNS Service Discovery process. The use of SVCB records alongside SRV records
+during service discovery enables richer metadata exchange, enhancing the ability
+to identify and select optimal connection parameters.  Specifically, SVCB
+records allow service instances to advertise properties such as
+Application-Layer Protocol Negotiation (ALPN) identifiers and other endpoint
+configuration options which streamlines client connections by providing
+essential information for protocol negotiation and connection setup during the
+discovery phase.<a href="#section-1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1228,35 +1229,19 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-motivation">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-motivation" class="section-name selfRef">Motivation</a>
       </h2>
-<p id="section-3-1">Typically, the DNS-SD <span>[<a href="#DNSSD" class="cite xref">DNSSD</a>]</span> process begins with a client
-enumerating service instance names using a PTR record query. The result of this
-PTR query is a list of zero or more PTR records each pointing to a unique
-service instance. For example, a query for <code>_foo._tcp.example.com</code> might return
-multiple PTR records, each corresponding to a specific service instances, such
-as <code>service1._foo._tcp.example.com</code> and <code>service2._foo._tcp.example.com</code>.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">Once the client identifies the exact service instance it wants to connect to,
-the client issues an SRV query for the service instance. The SRV record for the
-service instance includes the hostname of the service instance, the port number
-on which the service is listening, and priority and weight fields for load
-balancing or failover. For example, querying the SRV record for
-<code>service1._foo._tcp.example.com</code> might return a hostname like <code>host1.example.com</code>
-and a port number, such as <code>8080</code>.<a href="#section-3-2" class="pilcrow">¶</a></p>
-<p id="section-3-3">After resolving the SRV record, the client issues A and AAAA queries to map the
-hostname in the SRV record to an IP address. For example, querying for
-<code>host1.example.com</code> might return an A record with the IPv4 address <code>192.0.2.3</code> or an
-AAAA record with the IPv6 address <code>2001:db8::1</code>. Once the IP address is obtained,
-the client can initiate a connection to the desired service instance using the
-port number specified in the SRV record.<a href="#section-3-3" class="pilcrow">¶</a></p>
-<p id="section-3-4">However, this sequence provides only minimal metadata about the service itself
-which is why clients also query for TXT records (alongside SRV records) for the
-service instance. These TXT records give additional information about the
-service itself. The specific nature of the additional data in TXT records, and
-how it is to be used, is service-dependent. However, additional properties which
-are not service-specific, like supported protocols, or privacy requirements
-which speed up connection establishment and improve user privacy do not fit
-naturally in this scheme. This documents describes how this limitation can be
-overcome by integrating the use of SVCB / HTTPS resource records <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span>
-in the DNS service discovery process.<a href="#section-3-4" class="pilcrow">¶</a></p>
+<p id="section-3-1">The DNS Service Discovery, with the SRV and TXT records, provides some metadata
+about the service instance. The TXT records specifically are designed to give
+additional information about the service itself. The specific nature of the
+additional data in TXT records, and how it is to be used, is service-dependent.
+However, additional properties which are not service-specific, like supported
+protocols, or privacy requirements which speed up connection establishment and
+improve user privacy do not fit naturally in this scheme.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">This documents describes how with the use of SVCB / HTTPS resource records
+<span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span> in the DNS service discovery process we can support these non
+service specific properties such as Application-Layer Protocol Negotiation
+(ALPN) identifiers and other endpoint configuration options such as Encrypted
+Client Hello (ECH) so that a client can select its preferred options to
+optimally initiate the connection to the service instance.<a href="#section-3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="use-of-svcb-with-service-instance-resolution">
@@ -1264,16 +1249,35 @@ in the DNS service discovery process.<a href="#section-3-4" class="pilcrow">¶</
       <h2 id="name-use-of-svcb-with-service-in">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-use-of-svcb-with-service-in" class="section-name selfRef">Use of SVCB with Service Instance Resolution</a>
       </h2>
-<p id="section-4-1">Once the client has resolved the SRV record to identify the hostname and the port
+<p id="section-4-1">Typically, the DNS-SD <span>[<a href="#DNSSD" class="cite xref">DNSSD</a>]</span> process begins with a client
+enumerating service instance names using a PTR record query. The result of this
+PTR query is a list of zero or more PTR records each pointing to a unique
+service instance. For example, a query for <code>_foo._tcp.example.com</code> might return
+multiple PTR records, each corresponding to a specific service instances, such
+as <code>service1._foo._tcp.example.com</code> and <code>service2._foo._tcp.example.com</code>.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">Once the client identifies the exact service instance it wants to connect to,
+the client issues an SRV query for the service instance. The SRV record for the
+service instance includes the hostname of the service instance, the port number
+on which the service is listening, and priority and weight fields for load
+balancing or failover. For example, querying the SRV record for
+<code>service1._foo._tcp.example.com</code> might return a hostname like <code>host1.example.com</code>
+and a port number, such as <code>8080</code>.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">After resolving the SRV record, the client issues A and AAAA queries to map the
+hostname in the SRV record to an IP address. For example, querying for
+<code>host1.example.com</code> might return an A record with the IPv4 address <code>192.0.2.3</code> or an
+AAAA record with the IPv6 address <code>2001:db8::1</code>. Once the IP address is obtained,
+the client can initiate a connection to the desired service instance using the
+port number specified in the SRV record.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">Once the client has resolved the SRV record to identify the hostname and the port
 of the service instance, but before the A and AAAA queries are issued the client
 <span class="bcp14">SHOULD</span> issue an SVCB query. The service is translated into a QNAME by prepending
 the hostname with a label indicating the scheme prefixed with an underscore.
 Since there could be more than one service instance on the same host, "Port
-Prefix Naming" <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span> should be used.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<div id="example-use">
+Prefix Naming" <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span> <span class="bcp14">MUST</span> be used.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<div id="example-use-of-svcb-rrs">
 <section id="section-4.1">
-        <h3 id="name-example-use">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-example-use" class="section-name selfRef">Example Use</a>
+        <h3 id="name-example-use-of-svcb-rrs">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-example-use-of-svcb-rrs" class="section-name selfRef">Example Use of SVCB RRs</a>
         </h3>
 <p id="section-4.1-1">For example, if the SRV record for <code>service1._foo._tcp.example.com</code> returns a
 hostname <code>host1.example.com</code> and port number 8080.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
@@ -1285,10 +1289,10 @@ hostname <code>host1.example.com</code> and port number 8080.<a href="#section-4
 <p id="section-4.1-5"><code>
    _8080._foo.host1.example.com  7200  IN SVCB  1  .  ( alpn=h2,h3 )
 </code><a href="#section-4.1-5" class="pilcrow">¶</a></p>
-<p id="section-4.1-6">All put together, the client in this case learns that the service instance also
-supports h3 (which the client may prefer over h2) speeding up connection
-establishment with the service with its preferred protocol. Other SvcParamKeys
-such as ipv4hint, ipv6hint may also be used in conjuction.<a href="#section-4.1-6" class="pilcrow">¶</a></p>
+<p id="section-4.1-6">All put together, the client in this case with the <code>alpn</code> values learns that the
+service instance supports h3 (which the client may prefer over h2) speeding
+up connection establishment with the service with its preferred protocol. Other
+SvcParamKeys such as ipv4hint, ipv6hint may also be used in conjuction.<a href="#section-4.1-6" class="pilcrow">¶</a></p>
 <p id="section-4.1-7">As before, the client should then issue A and AAAA queries. However, now the
 client can make an informed decisions on how best to initiate the connection to
 the service instance based on the information obtained from the SVCB RRs.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
