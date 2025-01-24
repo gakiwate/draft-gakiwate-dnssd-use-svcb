@@ -35,6 +35,18 @@ informative:
 
 --- abstract
 
+DNS Service Discovery (DNS-SD) relies on a sequence of steps to enable the
+discovery and connection to local network services. The use of Service Binding
+(SVCB) resource records during the service discovery process enables service
+instances to advertise properties such as Application-Layer Protocol Negotiation
+(ALPN) identifiers and other endpoint configuration options. This document
+describes the use of SVCB / HTTPS RRs in the DNS Service Discovery process as an
+additional step to allow clients to connect to this service instance optimally.
+
+--- middle
+
+# Introduction
+
 This document describes the use of Service Binding (SVCB) resource records in
 the DNS Service Discovery process. The use of SVCB records alongside SRV records
 during service discovery enables richer metadata exchange, enhancing the ability
@@ -45,20 +57,28 @@ configuration options which streamlines client connections by providing
 essential information for protocol negotiation and connection setup during the
 discovery phase.
 
---- middle
-
-# Introduction
-
-DNS Service Discovery (DNS-SD) relies on a sequence of steps to enable the
-discovery and connection to local network services.  This document describes the
-use of SVCB / HTTPS RRs in the DNS Service Discovery process as an additional
-step to allow clients to connect to this service instance optimally.
-
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
 
 # Motivation
+
+The DNS Service Discovery, with the SRV and TXT records, provides some metadata
+about the service instance. The TXT records specifically are designed to give
+additional information about the service itself. The specific nature of the
+additional data in TXT records, and how it is to be used, is service-dependent.
+However, additional properties which are not service-specific, like supported
+protocols, or privacy requirements which speed up connection establishment and
+improve user privacy do not fit naturally in this scheme.
+
+This documents describes how with the use of SVCB / HTTPS resource records
+{{!SVCB=RFC9460}} in the DNS service discovery process we can support these non
+service specific properties such as Application-Layer Protocol Negotiation
+(ALPN) identifiers and other endpoint configuration options such as Encrypted
+Client Hello (ECH) so that a client can select its preferred options to
+optimally initiate the connection to the service instance.
+
+# Use of SVCB with Service Instance Resolution
 
 Typically, the DNS-SD {{!DNSSD=RFC6763}} process begins with a client
 enumerating service instance names using a PTR record query. The result of this
@@ -82,27 +102,14 @@ AAAA record with the IPv6 address `2001:db8::1`. Once the IP address is obtained
 the client can initiate a connection to the desired service instance using the
 port number specified in the SRV record.
 
-However, this sequence provides only minimal metadata about the service itself
-which is why clients also query for TXT records (alongside SRV records) for the
-service instance. These TXT records give additional information about the
-service itself. The specific nature of the additional data in TXT records, and
-how it is to be used, is service-dependent. However, additional properties which
-are not service-specific, like supported protocols, or privacy requirements
-which speed up connection establishment and improve user privacy do not fit
-naturally in this scheme. This documents describes how this limitation can be
-overcome by integrating the use of SVCB / HTTPS resource records {{!SVCB=RFC9460}}
-in the DNS service discovery process.
-
-# Use of SVCB with Service Instance Resolution
-
 Once the client has resolved the SRV record to identify the hostname and the port
 of the service instance, but before the A and AAAA queries are issued the client
 SHOULD issue an SVCB query. The service is translated into a QNAME by prepending
 the hostname with a label indicating the scheme prefixed with an underscore.
 Since there could be more than one service instance on the same host, "Port
-Prefix Naming" {{SVCB}} should be used.
+Prefix Naming" {{SVCB}} MUST be used.
 
-## Example Use
+## Example Use of SVCB RRs
 
 For example, if the SRV record for `service1._foo._tcp.example.com` returns a
 hostname `host1.example.com` and port number 8080.
@@ -119,10 +126,10 @@ The service instance operator can publish this SVCB record:
    _8080._foo.host1.example.com  7200  IN SVCB  1  .  ( alpn=h2,h3 )
 ```
 
-All put together, the client in this case learns that the service instance also
-supports h3 (which the client may prefer over h2) speeding up connection
-establishment with the service with its preferred protocol. Other SvcParamKeys
-such as ipv4hint, ipv6hint may also be used in conjuction.
+All put together, the client in this case with the `alpn` values learns that the
+service instance supports h3 (which the client may prefer over h2) speeding
+up connection establishment with the service with its preferred protocol. Other
+SvcParamKeys such as ipv4hint, ipv6hint may also be used in conjuction.
 
 As before, the client should then issue A and AAAA queries. However, now the
 client can make an informed decisions on how best to initiate the connection to
