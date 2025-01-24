@@ -103,40 +103,46 @@ the client can initiate a connection to the desired service instance using the
 port number specified in the SRV record.
 
 Once the client has resolved the SRV record to identify the hostname and the port
-of the service instance, but before the A and AAAA queries are issued the client
-SHOULD issue an SVCB query. The service is translated into a QNAME by prepending
-the hostname with a label indicating the scheme prefixed with an underscore.
-Since there could be more than one service instance on the same host, "Port
-Prefix Naming" {{SVCB}} MUST be used.
+of the service instance, and along with or before the A and AAAA queries are issued,
+the client can issue a query for an SVCB or HTTPS record, depending on the relevant
+URI scheme the application is using. The client is expected to use "Port Prefix
+Naming" {{SVCB}} to encode the port learned from the SRV response, and the scheme
+from the URI being accessed by the application. If there is no notion of a URI
+scheme for the application, then SVCB or HTTPS queries SHOULD NOT be made. If the
+URI scheme is "http" or "https", the client will issue a query for an HTTPS record;
+and if the port learned from the SRV response, it will leave off the port prefix.
 
 ## Example Use of SVCB RRs
 
-For example, if the SRV record for `service1._foo._tcp.example.com` returns a
-hostname `host1.example.com` and port number 8080.
+Consider an example where the client application starts with a service name
+`service1._foo._tcp.local` and expects to use a URI scheme of "https".
+The client first queries the SRV record for `service1._foo._tcp.example.com`,
+which returns a hostname `host1.example.com` and port number 8080.
 
 ```
    service1._foo._tcp.example.com  3600  IN  SRV   0  0  8080  host1.example.com
 ```
 
-In this case, the client SHOULD issue a SVCB query for `_8080._foo.host1.example.com`.
+The client application then can synthesize the URI "https://host1.example.com:8080".
 
-The service instance operator can publish this SVCB record:
+The client then issues issue an HTTPS query for `_8080.host1.example.com`, and
+A and AAAA queries for `host1.example.com`.
+
+The service instance operator can publish this HTTPS record:
 
 ```
-   _8080._foo.host1.example.com  7200  IN SVCB  1  .  ( alpn=h2,h3 )
+   _8080.host1.example.com  7200  IN HTTPS  1  .  ( alpn=h2,h3 )
 ```
 
 All put together, the client in this case with the `alpn` values learns that the
 service instance supports h3 (which the client may prefer over h2) speeding
 up connection establishment with the service with its preferred protocol. Other
-SvcParamKeys such as ipv4hint, ipv6hint may also be used in conjuction.
-
-As before, the client should then issue A and AAAA queries. However, now the
-client can make an informed decisions on how best to initiate the connection to
-the service instance based on the information obtained from the SVCB RRs.
+SvcParamKeys such as `ipv4hint` and  `ipv6hint` can also be present in the HTTPS
+record.
 
 # Security Considerations
 
+TODO
 
 # IANA Considerations
 
