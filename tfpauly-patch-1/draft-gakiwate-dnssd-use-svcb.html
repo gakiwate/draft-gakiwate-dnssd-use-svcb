@@ -1276,7 +1276,8 @@ Naming" <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span> to encode the 
 from the URI being accessed by the application. If there is no notion of a URI
 scheme for the application, then SVCB or HTTPS queries <span class="bcp14">SHOULD NOT</span> be made. If the
 URI scheme is "http" or "https", the client will issue a query for an HTTPS record;
-and if the port learned from the SRV response, it will leave off the port prefix.<a href="#section-4-4" class="pilcrow">¶</a></p>
+and if the port learned from the SRV response is the same as the default port
+(443), it will leave off the port prefix.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <div id="example-use-of-svcb-rrs">
 <section id="section-4.1">
         <h3 id="name-example-use-of-svcb-rrs">

@@ -163,7 +163,8 @@ Table of Contents
    a URI scheme for the application, then SVCB or HTTPS queries SHOULD
    NOT be made.  If the URI scheme is "http" or "https", the client will
    issue a query for an HTTPS record; and if the port learned from the
-   SRV response, it will leave off the port prefix.
+   SRV response is the same as the default port (443), it will leave off
+   the port prefix.
 
 4.1.  Example Use of SVCB RRs
 
