@@ -5,7 +5,7 @@
 Extensions for Scalable DNS Service Discovery                 G. Akiwate
 Internet-Draft                                                  T. Pauly
 Intended status: Informational                                 Apple Inc
-Expires: 28 July 2025                                    24 January 2025
+Expires: 1 September 2025                               28 February 2025
 
 
                   Use SVCB with DNS Service Discovery
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 July 2025.
+   This Internet-Draft will expire on 1 September 2025.
 
 Copyright Notice
 
@@ -81,7 +81,9 @@ Table of Contents
      4.1.  Example Use of SVCB RRs
    5.  Security Considerations
    6.  IANA Considerations
-   7.  Normative References
+   7.  References
+     7.1.  Normative References
+     7.2.  Informative References
    Appendix A.  Acknowledgments
    Authors' Addresses
 
@@ -121,10 +123,10 @@ Table of Contents
    This documents describes how with the use of SVCB / HTTPS resource
    records [SVCB] in the DNS service discovery process we can support
    these non service specific properties such as Application-Layer
-   Protocol Negotiation (ALPN) identifiers and other endpoint
-   configuration options such as Encrypted Client Hello (ECH) so that a
-   client can select its preferred options to optimally initiate the
-   connection to the service instance.
+   Protocol Negotiation (ALPN) [ALPN] identifiers and other endpoint
+   configuration options such as Encrypted Client Hello (ECH) [ECH] so
+   that a client can select its preferred options to optimally initiate
+   the connection to the service instance.
 
 4.  Use of SVCB with Service Instance Resolution
 
@@ -174,7 +176,7 @@ Table of Contents
    service1._foo._tcp.example.com, which returns a hostname
    host1.example.com and port number 8080.
 
-   service1._foo._tcp.example.com 3600 IN SRV 0 0 8080 host1.example.com
+service1._foo._tcp.example.com  3600  IN  SRV   0  0  8080  host1.example.com
 
    The client application then can synthesize the URI
    "https://host1.example.com:8080".
@@ -185,7 +187,8 @@ Table of Contents
 
    The service instance operator can publish this HTTPS record:
 
-   _8080.host1.example.com 7200 IN HTTPS 1 .  ( alpn=h2,h3 )
+   _8080.host1.example.com  7200  IN HTTPS  1  .  (
+       alpn=h2,h3 )
 
    All put together, the client in this case with the alpn values learns
    that the service instance supports h3 (which the client may prefer
@@ -201,7 +204,9 @@ Table of Contents
 
    This document has no IANA actions.
 
-7.  Normative References
+7.  References
+
+7.1.  Normative References
 
    [DNSSD]    Cheshire, S. and M. Krochmal, "DNS-Based Service
               Discovery", RFC 6763, DOI 10.17487/RFC6763, February 2013,
@@ -220,6 +225,19 @@ Table of Contents
               and Parameter Specification via the DNS (SVCB and HTTPS
               Resource Records)", RFC 9460, DOI 10.17487/RFC9460,
               November 2023, <https://www.rfc-editor.org/rfc/rfc9460>.
+
+7.2.  Informative References
+
+   [ALPN]     Friedl, S., Popov, A., Langley, A., and E. Stephan,
+              "Transport Layer Security (TLS) Application-Layer Protocol
+              Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
+              July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
+
+   [ECH]      Rescorla, E., Oku, K., Sullivan, N., and C. A. Wood, "TLS
+              Encrypted Client Hello", Work in Progress, Internet-Draft,
+              draft-ietf-tls-esni-23, 19 February 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              esni-23>.
 
 Appendix A.  Acknowledgments
 
