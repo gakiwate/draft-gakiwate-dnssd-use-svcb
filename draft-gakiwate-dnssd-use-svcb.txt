@@ -176,7 +176,8 @@ Table of Contents
    service1._foo._tcp.example.com, which returns a hostname
    host1.example.com and port number 8080.
 
-service1._foo._tcp.example.com  3600  IN  SRV   0  0  8080  host1.example.com
+   service1._foo._tcp.example.com  3600  IN  SRV   (
+       0  0  8080  host1.example.com )
 
    The client application then can synthesize the URI
    "https://host1.example.com:8080".
