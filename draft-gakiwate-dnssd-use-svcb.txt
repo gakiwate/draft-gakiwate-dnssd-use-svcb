@@ -5,7 +5,7 @@
 Extensions for Scalable DNS Service Discovery                 G. Akiwate
 Internet-Draft                                                  T. Pauly
 Intended status: Informational                                 Apple Inc
-Expires: 1 September 2025                               28 February 2025
+Expires: 2 September 2025                                   1 March 2025
 
 
                   Use SVCB with DNS Service Discovery
@@ -20,7 +20,7 @@ Abstract
    such as Application-Layer Protocol Negotiation (ALPN) identifiers and
    other endpoint configuration options.  This document describes the
    use of SVCB / HTTPS RRs in the DNS Service Discovery process as an
-   additional step to allow clients to connect to this service instance
+   additional step to allow clients to connect to service instances
    optimally.
 
 About This Document
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 September 2025.
+   This Internet-Draft will expire on 2 September 2025.
 
 Copyright Notice
 
