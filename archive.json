@@ -1,0 +1,99 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2025-03-02T01:16:49.359343+00:00",
+  "repo": "gakiwate/draft-gakiwate-dnssd-use-svcb",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDONus_H86I63G1",
+      "title": "Update examples, use a URI scheme",
+      "url": "https://github.com/gakiwate/draft-gakiwate-dnssd-use-svcb/pull/1",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-01-24T16:25:19Z",
+      "updatedAt": "2025-03-01T00:06:27Z",
+      "baseRepository": "gakiwate/draft-gakiwate-dnssd-use-svcb",
+      "baseRefName": "main",
+      "baseRefOid": "f89bced2c2187ae2732a1bb4c240fa8bac50e8ca",
+      "headRepository": "gakiwate/draft-gakiwate-dnssd-use-svcb",
+      "headRefName": "tfpauly-patch-1",
+      "headRefOid": "de495eee8c9e9ac8beae79abf67c6d8f6edb07b9",
+      "closedAt": "2025-01-24T17:35:17Z",
+      "mergedAt": "2025-01-24T17:35:17Z",
+      "mergedBy": "gakiwate",
+      "mergeCommit": {
+        "oid": "005c77ec14f6fff43fc82d22473701bfa69b6a68"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDONus_H86ZYIDQ",
+          "commit": {
+            "abbreviatedOid": "de495ee"
+          },
+          "author": "gakiwate",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-24T17:35:09Z",
+          "updatedAt": "2025-01-24T17:35:09Z",
+          "comments": []
+        }
+      ]
+    }
+  ]
+}
