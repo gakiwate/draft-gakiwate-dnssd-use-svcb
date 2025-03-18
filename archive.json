@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-16T01:19:32.428502+00:00",
+  "timestamp": "2025-03-18T01:14:36.647704+00:00",
   "repo": "gakiwate/draft-gakiwate-dnssd-use-svcb",
   "labels": [
     {
@@ -49,7 +49,24 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 2,
+      "id": "I_kwDONus_H86uRgCs",
+      "title": "Explain options for TLS auth",
+      "url": "https://github.com/gakiwate/draft-gakiwate-dnssd-use-svcb/issues/2",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We can refer to the TLS PAKE draft as an example of how authentication can work in this kind of local discovery case",
+      "createdAt": "2025-03-17T05:49:07Z",
+      "updatedAt": "2025-03-17T05:49:07Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
   "pulls": [
     {
       "number": 1,
