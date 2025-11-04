@@ -25,6 +25,10 @@ author:
     organization: Apple Inc
     email: "gakiwate@apple.com"
  -
+    fullname: François Michel
+    organization: Apple Inc
+    email: "f_michel@apple.com"
+ -
     fullname: Tommy Pauly
     organization: Apple Inc
     email: "tpauly@apple.com"
