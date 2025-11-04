@@ -3,9 +3,10 @@
 
 
 Extensions for Scalable DNS Service Discovery                 G. Akiwate
-Internet-Draft                                                  T. Pauly
-Intended status: Informational                                 Apple Inc
-Expires: 2 September 2025                                   1 March 2025
+Internet-Draft                                                 F. Michel
+Intended status: Informational                                  T. Pauly
+Expires: 8 May 2026                                            Apple Inc
+                                                         4 November 2025
 
 
                   Use SVCB with DNS Service Discovery
@@ -56,7 +57,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 September 2025.
+   This Internet-Draft will expire on 8 May 2026.
 
 Copyright Notice
 
@@ -236,9 +237,9 @@ Table of Contents
 
    [ECH]      Rescorla, E., Oku, K., Sullivan, N., and C. A. Wood, "TLS
               Encrypted Client Hello", Work in Progress, Internet-Draft,
-              draft-ietf-tls-esni-23, 19 February 2025,
+              draft-ietf-tls-esni-25, 14 June 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              esni-23>.
+              esni-25>.
 
 Appendix A.  Acknowledgments
 
@@ -247,6 +248,11 @@ Authors' Addresses
    Gautam Akiwate
    Apple Inc
    Email: gakiwate@apple.com
+
+
+   François Michel
+   Apple Inc
+   Email: f_michel@apple.com
 
 
    Tommy Pauly
